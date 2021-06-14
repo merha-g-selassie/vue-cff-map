@@ -1,0 +1,15 @@
+.services {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+img {
+  padding-right: 15px;
+}
+
+.hide {
+  visibility: hidden;
+}

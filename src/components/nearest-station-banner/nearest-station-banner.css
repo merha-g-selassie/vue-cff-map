@@ -1,0 +1,15 @@
+.banner {
+  width: 198px;
+  height: 23px;
+  background: #d13833;
+}
+
+.text {
+  letter-spacing: 0.78px;
+  text-align: center;
+  color: #ffffff;
+  text-transform: capitalize;
+  font-weight: bold;
+  vertical-align: middle;
+  padding-top: 2px;
+}

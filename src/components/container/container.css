@@ -1,0 +1,58 @@
+#container {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-image: linear-gradient(
+      rgba(85, 85, 85, 0.8),
+      rgba(85, 85, 85, 0.8)
+    ),
+    url('../../assets/swiss-federal-railways.png');
+  height: 75vh;
+  width: 100%;
+  border-bottom: 91px solid #d13833;
+}
+
+.container-data {
+  margin-top: 100px;
+  background: white;
+  padding: 25px;
+  margin: 0 auto;
+  z-index: 1;
+  width: 55%;
+  max-width: 1000px;
+}
+
+.container-position {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.container-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+  margin-bottom: 50px;
+}
+
+.container-title {
+  font-size: 3.5rem;
+  font-weight: 900;
+  width: 640px;
+  height: 150px;
+  text-align: center;
+  letter-spacing: 1.28px;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.container-subtitle {
+  font-size: 1.2rem;
+  text-align: center;
+  letter-spacing: 1.2px;
+  color: #ffffff;
+  text-transform: uppercase;
+  font-weight: 900;
+  width: 738px;
+  height: 55px;
+}
