@@ -66,11 +66,14 @@ export default class GoogleMap extends Vue {
           ${station.mail}
         </p>
       </div>
-      <div>
-      ${this.getWindowInfoServicesImages(station.service)}
-      </div>
     </div>
     `;
+
+    /*
+      <div>
+        ${this.getWindowInfoServicesImages(station.service)}
+      </div>
+    */
 
     return content;
   }
