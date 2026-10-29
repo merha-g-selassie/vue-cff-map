@@ -63,14 +63,12 @@ class StationModule extends VuexModule {
   @Action
   async getStations(payload: {
     dataset: string;
-    facet: string;
     nbRows: number;
     startAt: number;
   }) {
     this.setError(null);
     const res = await this.stationsService.getAllStations(
       payload.dataset,
-      payload.facet,
       payload.nbRows,
       payload.startAt,
     );

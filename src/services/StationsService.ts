@@ -2,14 +2,7 @@ import groupBy from 'lodash.groupby';
 import map from 'lodash.map';
 import sortBy from 'lodash.sortby';
 import { StationsApi } from '@/api';
-import {
-  BUSINESS_TRAVEL_SERVICE_CENTER,
-  GELDWESCHEL,
-  GEPACKAUFBEWAHRUNG,
-  GEPACKAUSGABE,
-  WESTERN_UNION,
-} from '@/constants';
-import { GeoLocation, Record, Service, CustomError } from '@/types';
+import { GeoLocation, ServicePoint, CustomError } from '@/types';
 import { Station } from '@/types';
 import { calculateDistance } from '@/utils';
 import { requestError } from '@/utils';
@@ -19,21 +12,17 @@ export class StationsService {
 
   public async getAllStations(
     dataset: string,
-    facet: string,
     nbRows: number,
     startAt: number,
   ): Promise<Station[] | CustomError> {
     try {
-      const records = await this.getStations(
+      const servicePoints = await this.getStations(
         dataset,
-        facet,
         nbRows,
         startAt,
         [],
       );
-      const filteredStations = this.removeUselessServices(records);
-      const convertedStations = this.convertStations(filteredStations);
-      return convertedStations;
+      return this.convertStations(servicePoints);
     } catch (err) {
       return requestError(err);
     }
@@ -80,26 +69,19 @@ export class StationsService {
 
   private getStations = async (
     dataset: string,
-    facet: string,
     nbRows: number,
     startAt: number,
-    results: Record[],
-  ): Promise<Record[]> => {
-    const res = await this.stationsApi.getStations(
-      dataset,
-      facet,
-      nbRows,
-      startAt,
-    );
-    const { records, nhits } = res;
+    results: ServicePoint[],
+  ): Promise<ServicePoint[]> => {
+    const res = await this.stationsApi.getStations(dataset, nbRows, startAt);
+    const { results: records, total_count: totalCount } = res;
     const requestResults = [...results, ...records];
 
-    if (startAt + nbRows < nhits) {
+    if (startAt + nbRows < totalCount) {
       const newStartAt = startAt + nbRows;
 
       return await this.getStations(
         dataset,
-        facet,
         nbRows,
         newStartAt,
         requestResults,
@@ -109,36 +91,18 @@ export class StationsService {
     return requestResults;
   };
 
-  private removeUselessServices = (records: Record[]): Record[] => {
-    const res = records.filter(record => {
-      return (
-        record.fields.service === GEPACKAUFBEWAHRUNG ||
-        record.fields.service === GEPACKAUSGABE ||
-        record.fields.service === BUSINESS_TRAVEL_SERVICE_CENTER ||
-        record.fields.service === GELDWESCHEL ||
-        record.fields.service === WESTERN_UNION
-      );
-    });
-    return res;
+  private convertStations = (servicePoints: ServicePoint[]): Station[] => {
+    return servicePoints.map(servicePoint => this.convertStation(servicePoint));
   };
 
-  private convertStations = (records: Record[]): Station[] => {
-    const convertedStations = records.map(record =>
-      this.convertStation(record),
-    );
-
-    return convertedStations;
-  };
-
-  private convertStation = (record: Record): Station => {
-    const { fields } = record;
-
+  private convertStation = (servicePoint: ServicePoint): Station => {
+    const { geopos, localityname, cantonname } = servicePoint;
     return {
-      name: fields.bezeichnung_offiziell,
-      mail: fields.mail || '',
-      address: this.createAddress(fields.plz, fields.ort, fields.adresse),
-      location: this.createLocation(fields.geopos),
-      service: [this.mapServices(fields.service)],
+      name: servicePoint.designationofficial,
+      mail: '',
+      address: [localityname, cantonname].filter(Boolean).join(', '),
+      location: geopos ? { latitude: geopos.lat, longitude: geopos.lon } : null,
+      service: [],
     };
   };
 
@@ -148,34 +112,4 @@ export class StationsService {
   ): number {
     return calculateDistance(userLocation, stationLocation);
   }
-
-  private createAddress = (
-    postcode: number,
-    location: string,
-    address?: string,
-  ): string => {
-    const fullAddress = `${address || ''} ${postcode} ${location}`;
-
-    return fullAddress;
-  };
-
-  private createLocation = (location: number[]): GeoLocation | null => {
-    if (location.length === 2) {
-      return {
-        latitude: location[0],
-        longitude: location[1],
-      };
-    } else {
-      return null;
-    }
-  };
-
-  private mapServices = (service: string): Service => {
-    if (service === GEPACKAUFBEWAHRUNG || service === GEPACKAUSGABE) {
-      return Service.LUGGAGE;
-    } else if (service === BUSINESS_TRAVEL_SERVICE_CENTER) {
-      return Service.LOUNGE;
-    }
-    return Service.MONEY_EXCHANGE;
-  };
 }
