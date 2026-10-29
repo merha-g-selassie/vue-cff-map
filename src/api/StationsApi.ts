@@ -1,10 +1,4 @@
-import {
-  API_BASE_URL,
-  API_SBB_DATASET,
-  API_SBB_FACET,
-  API_SBB_ROWS,
-  API_SBB_START,
-} from '@/constants';
+import { API_BASE_URL } from '@/constants';
 import { StationsResponse } from '@/types';
 import HttpClient from './HttpClient';
 
@@ -23,14 +17,20 @@ export class StationsApi extends HttpClient {
     return this.instance;
   }
 
-  public getStations = async (
+  public getRecords = async <T>(
     dataset: string,
-    facet: string,
     nbRows: number,
     startAt: number,
-  ): Promise<StationsResponse> => {
-    const url = `${API_SBB_DATASET}${dataset}${API_SBB_FACET}${facet}${API_SBB_ROWS}${nbRows}${API_SBB_START}${startAt}`;
-    const res = await this.instance.get<StationsResponse>(url);
+    where: string,
+  ): Promise<StationsResponse<T>> => {
+    const params = new URLSearchParams({
+      limit: String(nbRows),
+      offset: String(startAt),
+      where,
+    });
+    const res = await this.instance.get<StationsResponse<T>>(
+      `${dataset}/records?${params.toString()}`,
+    );
     return res.data;
   };
 }

@@ -1,23 +1,16 @@
-export const API_BASE_URL = 'https://data.sbb.ch/api/records/1.0/search/';
-export const API_SBB_DATASET = '?dataset=';
-export const API_SBB_FACET = '&facet=';
-export const API_SBB_ROWS = '&rows=';
-export const API_SBB_START = '&start=';
-export const DATASET = 'kontaktadressen';
-export const FACET = 'service';
+export const API_BASE_URL =
+  'https://data.sbb.ch/api/explore/v2.1/catalog/datasets/';
+export const DATASET = 'dienststellen-gemass-opentransportdataswiss';
+export const TICKET_MACHINE_DATASET = 'billetautomat';
+export const WIFI_DATASET = 'wifistation';
+export const STATION_FURNITURE_DATASET = 'mobiliar-im-bahnhof';
 export const NB_ROWS = 100;
 export const START_AT = 0;
 export const DEFAULT_REQUEST_PAYLOAD = {
   dataset: DATASET,
-  facet: FACET,
   nbRows: NB_ROWS,
   startAt: START_AT,
 };
-export const GEPACKAUFBEWAHRUNG = 'Gepäckaufbewahrung';
-export const GEPACKAUSGABE = 'Gepäckausgabe';
-export const BUSINESS_TRAVEL_SERVICE_CENTER = 'Businesstravel-Service-Center';
-export const GELDWESCHEL = 'Geldwechsel';
-export const WESTERN_UNION = 'Western Union';
 export const MAPS_ZOOM = 7.5;
 export const MARKER_CLUSTER_URL =
   'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m';
