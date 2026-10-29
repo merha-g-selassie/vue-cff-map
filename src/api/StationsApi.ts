@@ -25,7 +25,13 @@ export class StationsApi extends HttpClient {
     const params = new URLSearchParams({
       limit: String(nbRows),
       offset: String(startAt),
-      where: "isocountrycode='CH' AND meansoftransport='TRAIN'",
+      where: [
+        "isocountrycode='CH'",
+        "meansoftransport='TRAIN'",
+        "businessorganisationabbreviationde='SBB'",
+        "stoppoint='true'",
+        "operatingpointwithtimetable='true'",
+      ].join(' AND '),
     });
     const res = await this.instance.get<StationsResponse>(
       `${dataset}/records?${params.toString()}`,
