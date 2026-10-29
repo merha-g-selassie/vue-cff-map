@@ -9,16 +9,20 @@
 }
 
 .map-windowInfo {
+  box-sizing: border-box;
   background: white;
   color: black;
   display: flex;
   flex-direction: column;
-  width: 250px;
+  width: 100%;
+  max-width: min(320px, calc(100vw - 64px));
+  min-width: 0;
   text-align: left;
 }
 
 .gm-style .gm-style-iw-c {
   border-radius: 0;
+  max-width: min(344px, calc(100vw - 32px)) !important;
 }
 
 .gm-style .gm-style-iw-t::after {
@@ -26,8 +30,10 @@
 }
 
 .gm-style-iw-d {
-  width: 400px;
-  height: 250px;
+  width: auto !important;
+  max-width: 100% !important;
+  max-height: min(45vh, 360px) !important;
+  overflow: auto !important;
 }
 
 .gm-ui-hover-effect {
@@ -41,21 +47,38 @@
 }
 
 .map-windowInfo-city {
-  font-size: 1.5rem;
-  font-weight: 900;
+  margin: 0 24px 6px 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
 }
 
 .map-windowInfo-address {
-  font-size: 1.4rem;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
   color: #848484;
-  width: 150%;
+  overflow-wrap: anywhere;
 }
 
 .map-windoInfo-email {
-  font-size: 1rem;
+  margin: 8px 0 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
   color: #848484;
+  overflow-wrap: anywhere;
+}
+
+.map-windowInfo-services {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
 }
 
 .map-service-image {
-  padding-right: 10px;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }

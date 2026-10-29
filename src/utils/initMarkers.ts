@@ -16,10 +16,6 @@ export const initMarkers = (
       });
 
       const marker = new google.maps.Marker({ position: latLng });
-      marker.addListener('click', () => {
-        map.setZoom(13);
-        map.setCenter(marker.getPosition() as google.maps.LatLng);
-      });
       customMarkers.set(marker, station);
     }
   });

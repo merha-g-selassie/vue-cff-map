@@ -3,14 +3,14 @@ import { Component, Watch } from 'vue-property-decorator';
 import { initMaps, initMarkers, initWindowInfo } from '@/utils';
 import { stationModule } from '@/store/station-module';
 import { CustomMarkers, Station, Service } from '@/types';
-import {
-  MAP_ID,
-  DEFAULT_LATITUDE,
-  DEFAULT_LONGITUDE,
-  LOUNGE_URL,
-  LUGGAGE_URL,
-  MONEY_EXCHANGE_URL,
-} from '@/constants';
+import { MAP_ID, DEFAULT_LATITUDE, DEFAULT_LONGITUDE } from '@/constants';
+
+const serviceIcons: { [key: string]: string } = {
+  [Service.TICKET_MACHINE]: require('@/assets/ticket-machine.svg'),
+  [Service.LOCKERS]: require('@/assets/lockers.svg'),
+  [Service.WIFI]: require('@/assets/wifi.svg'),
+  [Service.PARK_AND_RIDE]: require('@/assets/park-and-ride.svg'),
+};
 
 @Component({
   name: 'GoogleMap',
@@ -38,16 +38,23 @@ export default class GoogleMap extends Vue {
   }
 
   markerClickHandler(marker: google.maps.Marker) {
+    const station = this.findStationByMarker(marker);
+    if (!station) {
+      return;
+    }
+
+    if (this.selectedStation === station) {
+      this.showStationInfo(station, marker);
+    } else {
+      stationModule.setCurrentStation({ station });
+    }
+  }
+
+  private showStationInfo(station: Station, marker: google.maps.Marker) {
     this.map.setZoom(13);
     this.map.setCenter(marker.getPosition() as google.maps.LatLng);
-
-    const station = this.findStationByMarker(marker);
-    if (station) {
-      stationModule.setCurrentStation({ station });
-      const content = this.getWindowInfoContent(station);
-      this.infoWindow.setContent(content);
-      this.infoWindow.open(this.map, marker);
-    }
+    this.infoWindow.setContent(this.getWindowInfoContent(station));
+    this.infoWindow.open(this.map, marker);
   }
 
   getWindowInfoContent(station: Station): string {
@@ -60,36 +67,28 @@ export default class GoogleMap extends Vue {
         <p class="map-windowInfo-address">
           ${station.address}
         </p>
+        <div class="map-windowInfo-services">
+          ${this.getWindowInfoServicesImages(station.service)}
+        </div>
       </div>
-      <div>
-        <p class="map-windoInfo-email">
-          ${station.mail}
-        </p>
-      </div>
+      ${
+        station.mail ? `<p class="map-windoInfo-email">${station.mail}</p>` : ''
+      }
     </div>
     `;
-
-    /*
-      <div>
-        ${this.getWindowInfoServicesImages(station.service)}
-      </div>
-    */
 
     return content;
   }
 
   getWindowInfoServicesImages(services: Service[]): string {
-    let imageTags = '';
-    if (services.includes(Service.MONEY_EXCHANGE)) {
-      imageTags = `${imageTags}<img width="23px" src="${MONEY_EXCHANGE_URL}" alt="${Service.MONEY_EXCHANGE}" class="map-service-image" />`;
-    }
-    if (services.includes(Service.LUGGAGE)) {
-      imageTags = `${imageTags}<img width="23px" src="${LUGGAGE_URL}" alt="${Service.LUGGAGE}" class="map-service-image" />`;
-    }
-    if (services.includes(Service.LOUNGE)) {
-      imageTags = `${imageTags}<img width="23px" src="${LOUNGE_URL}" alt="${Service.LOUNGE}" class="map-service-image" />`;
-    }
-    return imageTags;
+    return services
+      .map(service => {
+        const icon = serviceIcons[service];
+        return icon
+          ? `<img width="24" height="24" src="${icon}" alt="${service}" title="${service}" class="map-service-image" />`
+          : '';
+      })
+      .join('');
   }
 
   findStationByMarker(marker: google.maps.Marker): Station | undefined {
@@ -129,7 +128,7 @@ export default class GoogleMap extends Vue {
   onSelectedStationChanged(station: Station) {
     const marker = this.findMarkerByStation(station);
     if (marker) {
-      this.markerClickHandler(marker);
+      this.showStationInfo(station, marker);
     }
   }
 }

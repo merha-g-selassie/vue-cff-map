@@ -17,23 +17,18 @@ export class StationsApi extends HttpClient {
     return this.instance;
   }
 
-  public getStations = async (
+  public getRecords = async <T>(
     dataset: string,
     nbRows: number,
     startAt: number,
-  ): Promise<StationsResponse> => {
+    where: string,
+  ): Promise<StationsResponse<T>> => {
     const params = new URLSearchParams({
       limit: String(nbRows),
       offset: String(startAt),
-      where: [
-        "isocountrycode='CH'",
-        "meansoftransport='TRAIN'",
-        "businessorganisationabbreviationde='SBB'",
-        "stoppoint='true'",
-        "operatingpointwithtimetable='true'",
-      ].join(' AND '),
+      where,
     });
-    const res = await this.instance.get<StationsResponse>(
+    const res = await this.instance.get<StationsResponse<T>>(
       `${dataset}/records?${params.toString()}`,
     );
     return res.data;

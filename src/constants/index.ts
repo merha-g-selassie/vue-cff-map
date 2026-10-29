@@ -1,6 +1,9 @@
 export const API_BASE_URL =
   'https://data.sbb.ch/api/explore/v2.1/catalog/datasets/';
 export const DATASET = 'dienststellen-gemass-opentransportdataswiss';
+export const TICKET_MACHINE_DATASET = 'billetautomat';
+export const WIFI_DATASET = 'wifistation';
+export const STATION_FURNITURE_DATASET = 'mobiliar-im-bahnhof';
 export const NB_ROWS = 100;
 export const START_AT = 0;
 export const DEFAULT_REQUEST_PAYLOAD = {

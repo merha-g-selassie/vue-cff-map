@@ -7,7 +7,8 @@ export default class Services extends Vue {
   @Prop({ type: Array as () => Service[], default: () => [] })
   services!: Service[];
 
-  LOUNGE = Service.LOUNGE;
-  LUGGAGE = Service.LUGGAGE;
-  MONEY_EXCHANGE = Service.MONEY_EXCHANGE;
+  TICKET_MACHINE = Service.TICKET_MACHINE;
+  LOCKERS = Service.LOCKERS;
+  WIFI = Service.WIFI;
+  PARK_AND_RIDE = Service.PARK_AND_RIDE;
 }
